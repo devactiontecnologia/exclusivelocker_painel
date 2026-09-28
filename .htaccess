@@ -1,0 +1,22 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # /public/... → URL limpa (301)
+    RewriteCond %{THE_REQUEST} \s(/[^?\s]*)/public/([^\s?]*)[\s?] [NC]
+    RewriteRule ^public/ %1/%2 [R=301,L,QSA]
+
+    # Já em /public — .htaccess do public
+    RewriteRule ^public/ - [L]
+
+    # Arquivo/pasta real na raiz
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Demais URLs (rotas + css/js via index.php)
+    RewriteRule ^ index.php [L]
+</IfModule>
